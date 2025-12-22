@@ -375,6 +375,24 @@
             .card-title { font-size: 1.8rem; }
             .card-stat { font-size: 5rem; }
             .nav-btn { padding: 0.7rem 1.5rem; font-size: 0.8rem; }
+            .logo-watermark {
+                top: 1rem;
+                left: 1rem;
+                bottom: auto;
+                right: auto;
+                width: 100px;
+            }
+            .finale-buttons {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            .finale-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.8rem;
+            }
+            .progress-dots {
+                bottom: 12rem;
+            }
         }
     </style>
 </head>
@@ -550,7 +568,10 @@
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x0a0a12);
 
-            camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 5000);
+            // Use wider FOV on mobile to zoom out
+            const isMobile = window.innerWidth < 768;
+            const fov = isMobile ? 90 : 70;
+            camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 0.1, 5000);
             camera.position.set(0, 0, 0);
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -1320,6 +1341,8 @@
 
         window.addEventListener('resize', () => {
             if (camera && renderer) {
+                const isMobile = window.innerWidth < 768;
+                camera.fov = isMobile ? 90 : 70;
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
