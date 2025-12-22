@@ -829,6 +829,9 @@
                             }
                             const logoX = cardX + cardPadding + (logoSize - drawWidth) / 2;
                             const logoYPos = cardY + cardPadding + (logoSize - drawHeight) / 2;
+                            // Fill white behind logo to cover any transparency artifacts (especially for CVS)
+                            ctx.fillStyle = "#FFFFFF";
+                            ctx.fillRect(logoX, logoYPos, drawWidth, drawHeight);
                             ctx.drawImage(logo, logoX, logoYPos, drawWidth, drawHeight);
                         }
                     });
