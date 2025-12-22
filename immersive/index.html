@@ -806,7 +806,7 @@
                     } else {
                         titleY = s.stat ? centerY + 100 : centerY;
                     }
-                    wrapText(ctx, s.title, canvas.width / 2, titleY, canvas.width - 100, 65);
+                    wrapText(ctx, s.title, canvas.width / 2, titleY, canvas.width - 200, 65);
                     ctx.shadowBlur = 0; // Reset shadow
                 }
 
@@ -826,7 +826,7 @@
                     } else {
                         subY = s.stat ? centerY + 180 : centerY + 80;
                     }
-                    wrapText(ctx, s.subtitle, canvas.width / 2, subY, canvas.width - 100, 45);
+                    wrapText(ctx, s.subtitle, canvas.width / 2, subY, canvas.width - 300, 45);
                 }
 
                 // Draw AmplifAI logo on first and last slides (horizontal logo with transparency)
