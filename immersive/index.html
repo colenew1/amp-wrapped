@@ -427,6 +427,17 @@
     <div class="scene-indicator" id="scene-indicator">01 / 09</div>
 
     <script>
+        // Record mode - add ?record to URL to hide all UI for screen recording
+        const isRecordMode = new URLSearchParams(window.location.search).has('record');
+        if (isRecordMode) {
+            document.querySelector('.progress-dots')?.style.setProperty('display', 'none', 'important');
+            document.querySelector('.finale-buttons')?.style.setProperty('display', 'none', 'important');
+            document.querySelector('.nav-controls')?.style.setProperty('display', 'none', 'important');
+            document.querySelector('.progress-container')?.style.setProperty('display', 'none', 'important');
+            document.querySelector('.scene-indicator')?.style.setProperty('display', 'none', 'important');
+            document.querySelector('.logo-watermark')?.style.setProperty('display', 'none', 'important');
+        }
+
         // Scenes - text cards float in 3D space, positioned along the lookAt direction from camera
         const scenes = [
             {
@@ -1146,7 +1157,7 @@
             document.getElementById('next-btn').style.display = isFinale ? 'none' : 'block';
             document.getElementById('prev-btn').style.display = isFinale ? 'none' : 'block';
             document.getElementById('rewatch-btn').style.display = 'none'; // Hidden, using finale buttons instead
-            document.getElementById('finale-buttons').style.display = isFinale ? 'flex' : 'none';
+            document.getElementById('finale-buttons').style.display = (isFinale && !isRecordMode) ? 'flex' : 'none';
             updateProgressDots();
         }
 
