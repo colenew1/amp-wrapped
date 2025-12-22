@@ -320,7 +320,7 @@
                 finale: true,
                 camera: { x: 0, y: 0, z: 0 },
                 lookAt: { x: 0, y: 0, z: -100 },
-                textPos: { x: 0, y: -3, z: -55 }
+                textPos: { x: 0, y: -3, z: -42 }
             }
         ];
 
@@ -539,6 +539,9 @@
                         gradient.addColorStop(0, '#FF8C5A');
                         gradient.addColorStop(1, '#E85D26');
                     }
+                    // Add glow effect
+                    ctx.shadowColor = isGold ? '#FFD700' : '#E85D26';
+                    ctx.shadowBlur = 30;
                     ctx.fillStyle = gradient;
                     // Smaller font for longer stats, even smaller for first slide with logo
                     let fontSize;
@@ -558,10 +561,13 @@
                         statY = centerY - 20;
                     }
                     ctx.fillText(s.stat + (s.statUnit || ''), canvas.width / 2, statY);
+                    ctx.shadowBlur = 0; // Reset shadow
                 }
 
                 // Draw title - white, centered below stat (or in center if no stat)
                 if (s.title) {
+                    ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
+                    ctx.shadowBlur = 15;
                     ctx.fillStyle = '#FFFFFF';
                     ctx.font = '700 56px Lato, sans-serif';
                     // Adjust title position if logo is present
@@ -576,10 +582,13 @@
                         titleY = s.stat ? centerY + 100 : centerY;
                     }
                     wrapText(ctx, s.title, canvas.width / 2, titleY, canvas.width - 100, 65);
+                    ctx.shadowBlur = 0; // Reset shadow
                 }
 
                 // Draw subtitle below title
                 if (s.subtitle) {
+                    ctx.shadowColor = 'rgba(255, 255, 255, 0.3)';
+                    ctx.shadowBlur = 10;
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
                     ctx.font = '400 36px Lato, sans-serif';
                     let subY;
@@ -713,6 +722,10 @@
                 if (isCurrent) {
                     // Very subtle floating motion - just a hint of movement
                     plane.position.y = scenes[index].textPos.y + Math.sin(time * 0.5 + index) * 0.5;
+
+                    // Subtle pulse effect - very slight scale oscillation
+                    const pulse = 1 + Math.sin(time * 1.5) * 0.008;
+                    plane.scale.set(pulse, pulse, 1);
 
                     // Calculate distance to camera
                     const dist = camera.position.distanceTo(plane.position);
