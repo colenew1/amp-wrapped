@@ -490,7 +490,7 @@
                 ampLogo = new Image();
                 ampLogo.onload = checkDone;
                 ampLogo.onerror = checkDone;
-                ampLogo.src = '../assets/amplifai-logo.png';
+                ampLogo.src = AMP_LOGO_BASE64;
 
                 cmpLogo = new Image();
                 cmpLogo.onload = checkDone;
@@ -516,8 +516,8 @@
 
                 // Draw CMP Prism logo on slide 2 (introducing) - draw BEFORE text
                 if (index === 1 && cmpLogo && cmpLogo.complete && cmpLogo.naturalWidth > 0) {
-                    const logoSize = 240;
-                    ctx.drawImage(cmpLogo, (canvas.width - logoSize) / 2, centerY - 200, logoSize, logoSize);
+                    const logoSize = 280;
+                    ctx.drawImage(cmpLogo, (canvas.width - logoSize) / 2, centerY - 260, logoSize, logoSize);
                 }
 
                 // Draw stars if needed (above stat) - bigger and higher
@@ -596,16 +596,21 @@
                 }
 
                 // Draw AmplifAI logo on first and last slides (horizontal logo with transparency)
-                if ((index === 0 || index === scenes.length - 1) && ampLogo && ampLogo.complete) {
+                if ((index === 0 || index === scenes.length - 1) && ampLogo && ampLogo.complete && ampLogo.naturalWidth > 0) {
                     // Logo is 1920x531 (3.6:1 aspect ratio)
-                    const logoHeight = 70;
-                    const logoWidth = logoHeight * (1920 / 531); // ~253px
+                    let logoHeight;
+                    if (index === 0) {
+                        logoHeight = 70;
+                    } else {
+                        logoHeight = 120; // Bigger on thank you screen
+                    }
+                    const logoWidth = logoHeight * (1920 / 531);
                     const logoX = (canvas.width - logoWidth) / 2;
                     let logoY;
                     if (index === 0) {
                         logoY = 280;
                     } else {
-                        logoY = 310;
+                        logoY = 260; // Higher on thank you screen
                     }
                     // Draw the horizontal logo
                     ctx.drawImage(ampLogo, logoX, logoY, logoWidth, logoHeight);
@@ -761,7 +766,7 @@
             isAnimating = true;
 
             const s = scenes[index];
-            const duration = 2.5;
+            const duration = 1.5;
 
             // Update scene index immediately so the animate loop can handle opacity
             currentScene = index;
