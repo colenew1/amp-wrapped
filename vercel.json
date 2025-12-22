@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/immersive/record",
+      "destination": "/immersive/index.html?record"
+    },
+    {
+      "source": "/immersive/channel",
+      "destination": "/immersive/channel.html"
+    }
+  ]
+}
