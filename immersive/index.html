@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AmplifAI Wrapped 2026 - 3D Journey</title>
+    <title>AmplifAI Wrapped 2025 - 3D Journey</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -188,27 +188,6 @@
             transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .back-btn {
-            position: fixed;
-            top: 2rem;
-            left: 2rem;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.6);
-            padding: 0.6rem 1.2rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: 'Lato', sans-serif;
-            font-size: 0.75rem;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            z-index: 20;
-        }
-
-        .back-btn:hover {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-        }
 
         .scene-indicator {
             position: fixed;
@@ -230,72 +209,6 @@
             z-index: 15;
         }
 
-        .start-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at center, #12101f 0%, #0a0a12 100%);
-            z-index: 30;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            transition: opacity 1s ease, visibility 1s ease;
-        }
-
-        .start-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .start-logo {
-            width: 120px;
-            height: 120px;
-            margin-bottom: 2rem;
-            border: 1px dashed rgba(232, 93, 38, 0.3);
-            border-radius: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255,255,255,0.2);
-            font-size: 0.6rem;
-        }
-
-        .start-title {
-            font-size: 3rem;
-            font-weight: 900;
-            margin-bottom: 0.5rem;
-            color: #fff;
-        }
-
-        .start-subtitle {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.4);
-            margin-bottom: 3rem;
-        }
-
-        .start-btn {
-            background: linear-gradient(135deg, #E85D26, #FF7043);
-            border: none;
-            color: white;
-            padding: 1.1rem 3rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Lato', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 40px rgba(232, 93, 38, 0.3);
-        }
-
-        .start-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 50px rgba(232, 93, 38, 0.4);
-        }
 
         @media (max-width: 768px) {
             .card-title { font-size: 1.8rem; }
@@ -308,14 +221,6 @@
     <div id="canvas-container"></div>
     <canvas id="confetti-canvas"></canvas>
 
-    <div class="start-screen" id="start-screen">
-        <div class="start-logo">AmplifAI Logo</div>
-        <h1 class="start-title">AmplifAI Wrapped</h1>
-        <p class="start-subtitle">Your 2025 Year in Review</p>
-        <button class="start-btn" id="start-btn">BEGIN JOURNEY</button>
-    </div>
-
-    <a href="../index.html" class="back-btn">← Back</a>
 
     <div class="overlay">
         <div class="content-card" id="content-card"></div>
@@ -339,7 +244,7 @@
             {
                 label: "Year in Review",
                 title: "AmplifAI Wrapped",
-                stat: "2026",
+                stat: "2025",
                 statClass: "card-stat-orange",
                 subtitle: "Let's journey through an incredible year",
                 hasLogo: true,
@@ -355,7 +260,7 @@
                 hasPrism: true,
                 camera: { x: 100, y: 0, z: -120 },
                 lookAt: { x: 100, y: 0, z: -250 },
-                textPos: { x: 100, y: 0, z: -170 }
+                textPos: { x: 100, y: -5, z: -170 }
             },
             {
                 label: "Data Processed Daily",
@@ -386,9 +291,9 @@
                 stat: "800",
                 statUnit: "ms",
                 subtitle: "",
-                camera: { x: -200, y: 100, z: -400 },
-                lookAt: { x: -250, y: 50, z: -600 },
-                textPos: { x: -230, y: 70, z: -500 }
+                camera: { x: -150, y: 0, z: -400 },
+                lookAt: { x: -150, y: 0, z: -600 },
+                textPos: { x: -150, y: 0, z: -470 }
             },
             {
                 label: "Customer Satisfaction",
@@ -397,9 +302,9 @@
                 statClass: "card-stat-orange",
                 subtitle: "92% of customers highly likely to recommend",
                 hasStars: true,
-                camera: { x: 150, y: -100, z: -550 },
-                lookAt: { x: 100, y: -50, z: -750 },
-                textPos: { x: 120, y: -80, z: -650 }
+                camera: { x: 150, y: 0, z: -550 },
+                lookAt: { x: 150, y: 0, z: -750 },
+                textPos: { x: 150, y: 0, z: -620 }
             },
             {
                 label: "Milestone",
@@ -407,10 +312,9 @@
                 stat: "$33.7M",
                 statClass: "card-stat-gold",
                 subtitle: "Led by CVS Health Ventures",
-                // Keep camera closer for this important stat
-                camera: { x: 0, y: 60, z: -400 },
-                lookAt: { x: 0, y: 0, z: -600 },
-                textPos: { x: 0, y: 20, z: -500 }
+                camera: { x: -100, y: 0, z: -650 },
+                lookAt: { x: -100, y: 0, z: -850 },
+                textPos: { x: -100, y: 0, z: -720 }
             },
             {
                 label: "Our Community",
@@ -418,10 +322,9 @@
                 stat: "200K+",
                 statClass: "card-stat-orange",
                 subtitle: "255+ Customers & Partners strong",
-                // Straight on
-                camera: { x: -150, y: 0, z: -600 },
-                lookAt: { x: -150, y: 0, z: -800 },
-                textPos: { x: -150, y: 0, z: -680 }
+                camera: { x: 100, y: 0, z: -750 },
+                lookAt: { x: 100, y: 0, z: -950 },
+                textPos: { x: 100, y: 0, z: -820 }
             },
             {
                 label: "Thank You",
@@ -433,7 +336,7 @@
                 // Zoom back to origin for looping
                 camera: { x: 0, y: 0, z: 0 },
                 lookAt: { x: 0, y: 0, z: -100 },
-                textPos: { x: 0, y: 0, z: -55 }
+                textPos: { x: 0, y: -3, z: -55 }
             }
         ];
 
@@ -444,6 +347,8 @@
         let isAnimating = false;
         const clock = new THREE.Clock();
         let currentLookAt = { x: 0, y: 0, z: -100 }; // Track where camera is looking
+        let autoplayTimer = null;
+        const AUTOPLAY_DELAY = 4000; // 4 seconds between slides
 
         // Confetti
         const confettiCanvas = document.getElementById('confetti-canvas');
@@ -578,7 +483,18 @@
             });
         }
 
+        // Preload logos
+        const amplifaiLogo = new Image();
+        amplifaiLogo.src = '../assets/amp-logo.png';
+        const cmpPrismLogo = new Image();
+        cmpPrismLogo.src = '../assets/cmp-icon.png';
+
         function create3DTextCards() {
+            // Wait a moment for logos to load, then create cards
+            setTimeout(() => createTextCardsWithLogos(), 200);
+        }
+
+        function createTextCardsWithLogos() {
             // Create canvas-based text cards that float in 3D space - NO background, just bold text
             scenes.forEach((s, index) => {
                 const canvas = document.createElement('canvas');
@@ -589,17 +505,33 @@
                 // Clear - fully transparent background
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+                let contentStartY = 80;
+
+                // Draw logo if needed
+                if (s.hasLogo && amplifaiLogo.complete && amplifaiLogo.naturalWidth > 0) {
+                    const logoSize = 120;
+                    const logoX = (canvas.width - logoSize) / 2;
+                    ctx.drawImage(amplifaiLogo, logoX, 30, logoSize, logoSize);
+                    contentStartY = 180;
+                }
+
+                if (s.hasPrism && cmpPrismLogo.complete && cmpPrismLogo.naturalWidth > 0) {
+                    const logoSize = 150;
+                    const logoX = (canvas.width - logoSize) / 2;
+                    ctx.drawImage(cmpPrismLogo, logoX, 200, logoSize, logoSize);
+                }
+
                 // Draw label - bold orange
                 ctx.fillStyle = '#E85D26';
                 ctx.font = '700 36px Lato, sans-serif';
                 ctx.textAlign = 'center';
-                ctx.fillText(s.label.toUpperCase(), canvas.width / 2, 120);
+                ctx.fillText(s.label.toUpperCase(), canvas.width / 2, contentStartY + 40);
 
                 // Draw stars if needed (above stat)
                 if (s.hasStars) {
                     ctx.fillStyle = '#FFD700';
                     ctx.font = '60px sans-serif';
-                    ctx.fillText('★★★★★', canvas.width / 2, 200);
+                    ctx.fillText('★★★★★', canvas.width / 2, contentStartY + 120);
                 }
 
                 // Draw stat if exists - BIG and BOLD
@@ -616,21 +548,21 @@
                     }
                     ctx.fillStyle = gradient;
                     ctx.font = '900 280px Lato, sans-serif';
-                    const statY = s.hasStars ? 450 : 420;
+                    const statY = s.hasStars ? contentStartY + 340 : contentStartY + 310;
                     ctx.fillText(s.stat + (s.statUnit || ''), canvas.width / 2, statY);
                 }
 
                 // Draw title - white and clear
                 ctx.fillStyle = '#FFFFFF';
                 ctx.font = '400 48px Lato, sans-serif';
-                const titleY = s.stat ? 540 : 380;
+                const titleY = s.stat ? contentStartY + 430 : (s.hasPrism ? 420 : contentStartY + 200);
                 wrapText(ctx, s.title, canvas.width / 2, titleY, canvas.width - 100, 58);
 
                 // Draw subtitle
                 if (s.subtitle) {
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
                     ctx.font = '400 32px Lato, sans-serif';
-                    const subY = s.stat ? 620 : 460;
+                    const subY = s.stat ? contentStartY + 510 : (s.hasPrism ? 500 : contentStartY + 280);
                     wrapText(ctx, s.subtitle, canvas.width / 2, subY, canvas.width - 100, 42);
                 }
 
@@ -817,20 +749,32 @@
             }, duration * 1000 + 200);
         }
 
+        function startAutoplay() {
+            clearTimeout(autoplayTimer);
+            autoplayTimer = setTimeout(() => {
+                if (currentScene < scenes.length - 1) {
+                    nextScene();
+                }
+            }, AUTOPLAY_DELAY);
+        }
+
         function nextScene() {
             if (currentScene < scenes.length - 1) {
                 animateToScene(currentScene + 1);
+                startAutoplay(); // Continue autoplay after manual advance
             }
         }
 
         function prevScene() {
             if (currentScene > 0) {
                 animateToScene(currentScene - 1);
+                startAutoplay(); // Continue autoplay after manual navigation
             }
         }
 
         function rewatch() {
             animateToScene(0);
+            startAutoplay(); // Restart autoplay
         }
 
         function updateUI() {
@@ -886,9 +830,8 @@
             }
         }
 
-        // Events
-        document.getElementById('start-btn').addEventListener('click', () => {
-            document.getElementById('start-screen').classList.add('hidden');
+        // Auto-start immediately when page loads
+        window.addEventListener('load', () => {
             init();
             updateUI();
 
@@ -897,6 +840,8 @@
                 if (textPlanes[0]) {
                     textPlanes[0].material.opacity = 1;
                 }
+                // Start autoplay after first slide is shown
+                startAutoplay();
             }, 100);
         });
 
