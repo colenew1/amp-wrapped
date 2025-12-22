@@ -726,6 +726,8 @@
 
         function create3DTextCards() {
             // Create canvas-based text cards - NO background, just bold text centered
+            const isMobile = window.innerWidth < 768;
+
             scenes.forEach((s, index) => {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
@@ -735,6 +737,10 @@
                 // Clear - fully transparent background
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.textAlign = 'center';
+
+                // Tighter text wrapping on mobile
+                const titleMaxWidth = isMobile ? canvas.width - 500 : canvas.width - 200;
+                const subtitleMaxWidth = isMobile ? canvas.width - 600 : canvas.width - 450;
 
                 // Center point
                 const centerY = canvas.height / 2;
@@ -806,7 +812,7 @@
                     } else {
                         titleY = s.stat ? centerY + 100 : centerY;
                     }
-                    wrapText(ctx, s.title, canvas.width / 2, titleY, canvas.width - 200, 65);
+                    wrapText(ctx, s.title, canvas.width / 2, titleY, titleMaxWidth, 65);
                     ctx.shadowBlur = 0; // Reset shadow
                 }
 
@@ -826,7 +832,7 @@
                     } else {
                         subY = s.stat ? centerY + 180 : centerY + 80;
                     }
-                    wrapText(ctx, s.subtitle, canvas.width / 2, subY, canvas.width - 450, 45);
+                    wrapText(ctx, s.subtitle, canvas.width / 2, subY, subtitleMaxWidth, 45);
                 }
 
                 // Draw AmplifAI logo on first and last slides (horizontal logo with transparency)
