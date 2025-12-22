@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AmplifAI Wrapped 2026 - 3D Journey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: #0a0a12;
+            overflow: hidden;
+            color: white;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .overlay {
+            display: none; /* Using 3D text cards instead */
+        }
+
+        .content-card {
+            display: none;
+        }
+
+        .card-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            color: #E85D26;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 0 30px rgba(232, 93, 38, 0.5);
+        }
+
+        .card-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 300;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: rgba(255,255,255,0.95);
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-stat {
+            font-size: clamp(5rem, 18vw, 12rem);
+            font-weight: 900;
+            line-height: 1;
+            margin: 0.5rem 0;
+            background: linear-gradient(180deg, #FFFFFF 0%, #CCCCCC 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 4px 30px rgba(255, 255, 255, 0.2));
+        }
+
+        .card-stat-orange {
+            background: linear-gradient(180deg, #FF8C5A 0%, #E85D26 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 40px rgba(232, 93, 38, 0.5));
+        }
+
+        .card-stat-gold {
+            background: linear-gradient(180deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 50px rgba(255, 215, 0, 0.5));
+        }
+
+        .card-subtitle {
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 1rem;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .stat-unit {
+            font-size: 0.4em;
+            opacity: 0.7;
+        }
+
+        .stars {
+            font-size: 2.5rem;
+            color: #FFD700;
+            margin: 0.5rem 0;
+            letter-spacing: 8px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+
+        .logo-placeholder {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            border: 1px dashed rgba(232, 93, 38, 0.4);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(232, 93, 38, 0.05);
+            color: rgba(255,255,255,0.2);
+            font-size: 0.6rem;
+        }
+
+        .prism-placeholder {
+            width: 130px;
+            height: 130px;
+            margin: 1.5rem auto;
+            border: 1px dashed rgba(255, 215, 0, 0.4);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 215, 0, 0.03);
+            color: rgba(255,255,255,0.2);
+            font-size: 0.6rem;
+        }
+
+        .nav-controls {
+            position: fixed;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 20;
+            pointer-events: all;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: rgba(255,255,255,0.8);
+            padding: 0.9rem 2.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Lato', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn:hover {
+            background: rgba(232, 93, 38, 0.15);
+            border-color: rgba(232, 93, 38, 0.4);
+            color: #fff;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+
+        .progress-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.03);
+            z-index: 20;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #E85D26, #FF8C5A);
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Lato', sans-serif;
+            font-size: 0.75rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            z-index: 20;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        .scene-indicator {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.35);
+            letter-spacing: 2px;
+            z-index: 20;
+        }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 15;
+        }
+
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #12101f 0%, #0a0a12 100%);
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .start-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .start-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 2rem;
+            border: 1px dashed rgba(232, 93, 38, 0.3);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.2);
+            font-size: 0.6rem;
+        }
+
+        .start-title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .start-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 3rem;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #E85D26, #FF7043);
+            border: none;
+            color: white;
+            padding: 1.1rem 3rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(232, 93, 38, 0.3);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(232, 93, 38, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .card-title { font-size: 1.8rem; }
+            .card-stat { font-size: 5rem; }
+            .nav-btn { padding: 0.7rem 1.5rem; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="start-screen" id="start-screen">
+        <div class="start-logo">AmplifAI Logo</div>
+        <h1 class="start-title">AmplifAI Wrapped</h1>
+        <p class="start-subtitle">Your 2025 Year in Review</p>
+        <button class="start-btn" id="start-btn">BEGIN JOURNEY</button>
+    </div>
+
+    <a href="../index.html" class="back-btn">← Back</a>
+
+    <div class="overlay">
+        <div class="content-card" id="content-card"></div>
+    </div>
+
+    <div class="nav-controls">
+        <button class="nav-btn" id="prev-btn" disabled>PREV</button>
+        <button class="nav-btn" id="next-btn">NEXT</button>
+        <button class="nav-btn" id="rewatch-btn" style="display: none;">REWATCH</button>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <div class="scene-indicator" id="scene-indicator">01 / 09</div>
+
+    <script>
+        // Scenes - text cards float in 3D space, positioned along the lookAt direction from camera
+        const scenes = [
+            {
+                label: "Year in Review",
+                title: "AmplifAI Wrapped",
+                stat: "2026",
+                statClass: "card-stat-orange",
+                subtitle: "Let's journey through an incredible year",
+                hasLogo: true,
+                camera: { x: 0, y: 0, z: 0 },
+                lookAt: { x: 0, y: 0, z: -100 },
+                textPos: { x: 0, y: 0, z: -55 }
+            },
+            {
+                label: "Introducing",
+                title: "CMP Prism",
+                stat: "",
+                subtitle: "Our breakthrough feature of the year",
+                hasPrism: true,
+                camera: { x: 100, y: 0, z: -120 },
+                lookAt: { x: 100, y: 0, z: -250 },
+                textPos: { x: 100, y: 0, z: -170 }
+            },
+            {
+                label: "Data Processed Daily",
+                title: "Billion data points. Every single day.",
+                stat: "5+",
+                statUnit: "B",
+                statClass: "card-stat-orange",
+                subtitle: "Powering real-time insights worldwide",
+                // Straight on, centered
+                camera: { x: -100, y: 0, z: -200 },
+                lookAt: { x: -100, y: 0, z: -400 },
+                textPos: { x: -100, y: 0, z: -270 }
+            },
+            {
+                label: "Global Reach",
+                title: "Nations trust AmplifAI",
+                stat: "30+",
+                statClass: "card-stat-orange",
+                subtitle: "Teams around the world rely on our platform",
+                // Straight on, bigger
+                camera: { x: 200, y: 0, z: -200 },
+                lookAt: { x: 200, y: 0, z: -400 },
+                textPos: { x: 200, y: 0, z: -270 }
+            },
+            {
+                label: "Response Time",
+                title: "Lightning fast. Real-time performance.",
+                stat: "800",
+                statUnit: "ms",
+                subtitle: "",
+                camera: { x: -200, y: 100, z: -400 },
+                lookAt: { x: -250, y: 50, z: -600 },
+                textPos: { x: -230, y: 70, z: -500 }
+            },
+            {
+                label: "Customer Satisfaction",
+                title: "CSAT Score",
+                stat: "4.75",
+                statClass: "card-stat-orange",
+                subtitle: "92% of customers highly likely to recommend",
+                hasStars: true,
+                camera: { x: 150, y: -100, z: -550 },
+                lookAt: { x: 100, y: -50, z: -750 },
+                textPos: { x: 120, y: -80, z: -650 }
+            },
+            {
+                label: "Milestone",
+                title: "Series B Funding",
+                stat: "$33.7M",
+                statClass: "card-stat-gold",
+                subtitle: "Led by CVS Health Ventures",
+                // Keep camera closer for this important stat
+                camera: { x: 0, y: 60, z: -400 },
+                lookAt: { x: 0, y: 0, z: -600 },
+                textPos: { x: 0, y: 20, z: -500 }
+            },
+            {
+                label: "Our Community",
+                title: "Active Users",
+                stat: "200K+",
+                statClass: "card-stat-orange",
+                subtitle: "255+ Customers & Partners strong",
+                // Straight on
+                camera: { x: -150, y: 0, z: -600 },
+                lookAt: { x: -150, y: 0, z: -800 },
+                textPos: { x: -150, y: 0, z: -680 }
+            },
+            {
+                label: "Thank You",
+                title: "Here's to 2026",
+                stat: "",
+                subtitle: "Together, we're transforming how teams achieve excellence.",
+                hasLogo: true,
+                finale: true,
+                // Zoom back to origin for looping
+                camera: { x: 0, y: 0, z: 0 },
+                lookAt: { x: 0, y: 0, z: -100 },
+                textPos: { x: 0, y: 0, z: -55 }
+            }
+        ];
+
+        let currentScene = 0;
+        let scene, camera, renderer;
+        let particles, floatingObjects = [];
+        let textPlanes = []; // 3D text cards in the environment
+        let isAnimating = false;
+        const clock = new THREE.Clock();
+        let currentLookAt = { x: 0, y: 0, z: -100 }; // Track where camera is looking
+
+        // Confetti
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const confettiCtx = confettiCanvas.getContext('2d');
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+        let confettiPieces = [];
+
+        function init() {
+            const container = document.getElementById('canvas-container');
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0a12);
+
+            camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 5000);
+            camera.position.set(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            createParticleField();
+            createFloatingShapes();
+            createNebulae();
+            create3DTextCards();
+            addLights();
+
+            animate();
+        }
+
+        function createParticleField() {
+            const geometry = new THREE.BufferGeometry();
+            const count = 25000;
+            const positions = new Float32Array(count * 3);
+            const colors = new Float32Array(count * 3);
+
+            // Corridor from z: 500 to z: -1500 (camera goes from 0 to -1050)
+            for (let i = 0; i < count; i++) {
+                const i3 = i * 3;
+
+                positions[i3] = (Math.random() - 0.5) * 1200;      // x spread
+                positions[i3 + 1] = (Math.random() - 0.5) * 800;   // y spread
+                positions[i3 + 2] = Math.random() * 2000 - 1500;   // z: 500 to -1500
+
+                // Orange and purple only
+                if (Math.random() > 0.4) {
+                    colors[i3] = 0.91;
+                    colors[i3 + 1] = 0.36;
+                    colors[i3 + 2] = 0.15;
+                } else {
+                    colors[i3] = 0.5;
+                    colors[i3 + 1] = 0.3;
+                    colors[i3 + 2] = 0.6;
+                }
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 2,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                sizeAttenuation: true
+            });
+
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+        }
+
+        function createFloatingShapes() {
+            const geometries = [
+                new THREE.OctahedronGeometry(15, 0),
+                new THREE.TetrahedronGeometry(18, 0),
+                new THREE.IcosahedronGeometry(12, 0)
+            ];
+
+            for (let i = 0; i < 60; i++) {
+                const geo = geometries[Math.floor(Math.random() * geometries.length)];
+                const isOrange = Math.random() > 0.4;
+                const mat = new THREE.MeshPhongMaterial({
+                    color: isOrange ? 0xE85D26 : 0x8B5CF6,
+                    transparent: true,
+                    opacity: 0.25,
+                    wireframe: true
+                });
+
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.position.x = (Math.random() - 0.5) * 800;
+                mesh.position.y = (Math.random() - 0.5) * 500;
+                mesh.position.z = Math.random() * 1800 - 1400;
+
+                mesh.rotation.x = Math.random() * Math.PI;
+                mesh.rotation.y = Math.random() * Math.PI;
+
+                const scale = 0.8 + Math.random() * 2;
+                mesh.scale.set(scale, scale, scale);
+
+                mesh.userData = {
+                    rotSpeed: { x: (Math.random() - 0.5) * 0.01, y: (Math.random() - 0.5) * 0.01 },
+                    floatSpeed: 0.3 + Math.random() * 0.5,
+                    floatOffset: Math.random() * Math.PI * 2,
+                    baseY: mesh.position.y
+                };
+
+                floatingObjects.push(mesh);
+                scene.add(mesh);
+            }
+        }
+
+        function createNebulae() {
+            const nebulaData = [
+                { x: 0, y: 0, z: -300, size: 800, color: 0xE85D26, opacity: 0.04 },
+                { x: -200, y: 100, z: -600, size: 600, color: 0x8B5CF6, opacity: 0.03 },
+                { x: 150, y: -80, z: -900, size: 700, color: 0xE85D26, opacity: 0.035 },
+                { x: -100, y: 50, z: -1200, size: 650, color: 0x8B5CF6, opacity: 0.03 }
+            ];
+
+            nebulaData.forEach(n => {
+                const geo = new THREE.SphereGeometry(n.size, 32, 32);
+                const mat = new THREE.MeshBasicMaterial({
+                    color: n.color,
+                    transparent: true,
+                    opacity: n.opacity,
+                    side: THREE.BackSide
+                });
+                const nebula = new THREE.Mesh(geo, mat);
+                nebula.position.set(n.x, n.y, n.z);
+                scene.add(nebula);
+            });
+        }
+
+        function create3DTextCards() {
+            // Create canvas-based text cards that float in 3D space - NO background, just bold text
+            scenes.forEach((s, index) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 1200;
+                canvas.height = 900;
+
+                // Clear - fully transparent background
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw label - bold orange
+                ctx.fillStyle = '#E85D26';
+                ctx.font = '700 36px Lato, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(s.label.toUpperCase(), canvas.width / 2, 120);
+
+                // Draw stars if needed (above stat)
+                if (s.hasStars) {
+                    ctx.fillStyle = '#FFD700';
+                    ctx.font = '60px sans-serif';
+                    ctx.fillText('★★★★★', canvas.width / 2, 200);
+                }
+
+                // Draw stat if exists - BIG and BOLD
+                if (s.stat) {
+                    const isGold = s.statClass === 'card-stat-gold';
+                    const gradient = ctx.createLinearGradient(0, 200, 0, 500);
+                    if (isGold) {
+                        gradient.addColorStop(0, '#FFD700');
+                        gradient.addColorStop(0.5, '#FFA500');
+                        gradient.addColorStop(1, '#FFD700');
+                    } else {
+                        gradient.addColorStop(0, '#FF8C5A');
+                        gradient.addColorStop(1, '#E85D26');
+                    }
+                    ctx.fillStyle = gradient;
+                    ctx.font = '900 280px Lato, sans-serif';
+                    const statY = s.hasStars ? 450 : 420;
+                    ctx.fillText(s.stat + (s.statUnit || ''), canvas.width / 2, statY);
+                }
+
+                // Draw title - white and clear
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = '400 48px Lato, sans-serif';
+                const titleY = s.stat ? 540 : 380;
+                wrapText(ctx, s.title, canvas.width / 2, titleY, canvas.width - 100, 58);
+
+                // Draw subtitle
+                if (s.subtitle) {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+                    ctx.font = '400 32px Lato, sans-serif';
+                    const subY = s.stat ? 620 : 460;
+                    wrapText(ctx, s.subtitle, canvas.width / 2, subY, canvas.width - 100, 42);
+                }
+
+                // Create texture and plane
+                const texture = new THREE.CanvasTexture(canvas);
+                texture.needsUpdate = true;
+
+                const planeGeo = new THREE.PlaneGeometry(100, 75);
+                const planeMat = new THREE.MeshBasicMaterial({
+                    map: texture,
+                    transparent: true,
+                    opacity: 0,
+                    side: THREE.DoubleSide,
+                    depthWrite: false // Prevents z-fighting issues
+                });
+
+                const plane = new THREE.Mesh(planeGeo, planeMat);
+                plane.position.set(s.textPos.x, s.textPos.y, s.textPos.z);
+
+                plane.userData = { sceneIndex: index };
+                textPlanes.push(plane);
+                scene.add(plane);
+            });
+        }
+
+        // Helper to draw rounded rectangles
+        function roundRect(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+        }
+
+        // Helper to wrap text
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+            const words = text.split(' ');
+            let line = '';
+            let testLine = '';
+
+            for (let i = 0; i < words.length; i++) {
+                testLine = line + words[i] + ' ';
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > maxWidth && i > 0) {
+                    ctx.fillText(line.trim(), x, y);
+                    line = words[i] + ' ';
+                    y += lineHeight;
+                } else {
+                    line = testLine;
+                }
+            }
+            ctx.fillText(line.trim(), x, y);
+        }
+
+        function addLights() {
+            const ambient = new THREE.AmbientLight(0xE85D26, 0.2);
+            scene.add(ambient);
+
+            const point1 = new THREE.PointLight(0xE85D26, 2, 1000);
+            point1.position.set(200, 100, -300);
+            scene.add(point1);
+
+            const point2 = new THREE.PointLight(0x8B5CF6, 1.5, 800);
+            point2.position.set(-200, -100, -700);
+            scene.add(point2);
+
+            const point3 = new THREE.PointLight(0xE85D26, 2, 1000);
+            point3.position.set(100, 80, -1000);
+            scene.add(point3);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const time = clock.getElapsedTime();
+
+            // Subtle particle drift
+            if (particles) {
+                particles.rotation.y += 0.0001;
+            }
+
+            // Animate shapes
+            floatingObjects.forEach(obj => {
+                obj.rotation.x += obj.userData.rotSpeed.x;
+                obj.rotation.y += obj.userData.rotSpeed.y;
+                obj.position.y = obj.userData.baseY + Math.sin(time * obj.userData.floatSpeed + obj.userData.floatOffset) * 10;
+            });
+
+            // Animate text cards - only show current scene's card, fully facing camera
+            textPlanes.forEach((plane, index) => {
+                const isCurrent = index === currentScene;
+
+                if (isCurrent) {
+                    // Very subtle floating motion - just a hint of movement
+                    plane.position.y = scenes[index].textPos.y + Math.sin(time * 0.5 + index) * 0.5;
+
+                    // Calculate distance to camera
+                    const dist = camera.position.distanceTo(plane.position);
+
+                    // Fade in to FULL opacity when close (within 120 units = full, starts fading in at 200)
+                    const targetOpacity = Math.max(0, Math.min(1, (200 - dist) / 80));
+                    // Faster fade-in for snappier feel
+                    plane.material.opacity += (targetOpacity - plane.material.opacity) * 0.12;
+
+                    // Always face the camera directly (full billboard)
+                    plane.lookAt(camera.position);
+                } else {
+                    // Hide all non-current cards quickly
+                    plane.material.opacity *= 0.85;
+                    if (plane.material.opacity < 0.01) plane.material.opacity = 0;
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        function updateContent() {
+            const card = document.getElementById('content-card');
+            const s = scenes[currentScene];
+
+            let logoHTML = s.hasLogo ? '<div class="logo-placeholder">AmplifAI Logo</div>' : '';
+            let prismHTML = s.hasPrism ? '<div class="prism-placeholder">CMP Prism Logo</div>' : '';
+            let starsHTML = s.hasStars ? '<div class="stars">★★★★★</div>' : '';
+            let statHTML = s.stat ? `<div class="card-stat ${s.statClass || ''}">${s.stat}${s.statUnit ? `<span class="stat-unit">${s.statUnit}</span>` : ''}</div>` : '';
+
+            card.innerHTML = `
+                ${logoHTML}
+                <div class="card-label">${s.label}</div>
+                ${starsHTML}
+                ${statHTML}
+                <div class="card-title">${s.title}</div>
+                ${s.subtitle ? `<div class="card-subtitle">${s.subtitle}</div>` : ''}
+                ${prismHTML}
+            `;
+        }
+
+        function animateToScene(index) {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            const s = scenes[index];
+            const duration = 2.5;
+
+            // Update scene index immediately so the animate loop can handle opacity
+            currentScene = index;
+
+            // Animate camera position and lookAt together - using currentLookAt to prevent jump
+            gsap.to(camera.position, {
+                x: s.camera.x,
+                y: s.camera.y,
+                z: s.camera.z,
+                duration: duration,
+                ease: 'power3.inOut',
+                onUpdate: () => {
+                    camera.lookAt(currentLookAt.x, currentLookAt.y, currentLookAt.z);
+                }
+            });
+
+            // Smoothly transition where camera looks - starts from current lookAt, not camera position
+            gsap.to(currentLookAt, {
+                x: s.lookAt.x,
+                y: s.lookAt.y,
+                z: s.lookAt.z,
+                duration: duration,
+                ease: 'power3.inOut'
+            });
+
+            // Update UI progress
+            setTimeout(() => {
+                updateUI();
+                if (s.finale) {
+                    setTimeout(createConfetti, 800);
+                }
+            }, duration * 0.5 * 1000);
+
+            // Animation complete
+            setTimeout(() => {
+                isAnimating = false;
+            }, duration * 1000 + 200);
+        }
+
+        function nextScene() {
+            if (currentScene < scenes.length - 1) {
+                animateToScene(currentScene + 1);
+            }
+        }
+
+        function prevScene() {
+            if (currentScene > 0) {
+                animateToScene(currentScene - 1);
+            }
+        }
+
+        function rewatch() {
+            animateToScene(0);
+        }
+
+        function updateUI() {
+            document.getElementById('progress-bar').style.width = `${((currentScene + 1) / scenes.length) * 100}%`;
+            document.getElementById('scene-indicator').textContent =
+                `${String(currentScene + 1).padStart(2, '0')} / ${String(scenes.length).padStart(2, '0')}`;
+
+            document.getElementById('prev-btn').disabled = currentScene === 0;
+            const isFinale = currentScene === scenes.length - 1;
+            document.getElementById('next-btn').style.display = isFinale ? 'none' : 'block';
+            document.getElementById('rewatch-btn').style.display = isFinale ? 'block' : 'none';
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 200; i++) {
+                confettiPieces.push({
+                    x: Math.random() * confettiCanvas.width,
+                    y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+                    size: Math.random() * 10 + 4,
+                    color: ['#E85D26', '#FFD700', '#8B5CF6', '#FF8C5A'][Math.floor(Math.random() * 4)],
+                    speedY: Math.random() * 4 + 2,
+                    speedX: (Math.random() - 0.5) * 5,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 18
+                });
+            }
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+            confettiPieces.forEach((c, i) => {
+                c.y += c.speedY;
+                c.x += c.speedX;
+                c.rotation += c.rotationSpeed;
+                c.speedX *= 0.99;
+
+                confettiCtx.save();
+                confettiCtx.translate(c.x, c.y);
+                confettiCtx.rotate(c.rotation * Math.PI / 180);
+                confettiCtx.fillStyle = c.color;
+                confettiCtx.fillRect(-c.size / 2, -c.size / 2, c.size, c.size / 2);
+                confettiCtx.restore();
+
+                if (c.y > confettiCanvas.height + 50) {
+                    confettiPieces.splice(i, 1);
+                }
+            });
+
+            if (confettiPieces.length > 0) {
+                requestAnimationFrame(animateConfetti);
+            }
+        }
+
+        // Events
+        document.getElementById('start-btn').addEventListener('click', () => {
+            document.getElementById('start-screen').classList.add('hidden');
+            init();
+            updateUI();
+
+            // Make first text card fully opaque immediately
+            setTimeout(() => {
+                if (textPlanes[0]) {
+                    textPlanes[0].material.opacity = 1;
+                }
+            }, 100);
+        });
+
+        document.getElementById('next-btn').addEventListener('click', nextScene);
+        document.getElementById('prev-btn').addEventListener('click', prevScene);
+        document.getElementById('rewatch-btn').addEventListener('click', rewatch);
+
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('start-screen').classList.contains('hidden')) {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    e.preventDefault();
+                    if (currentScene === scenes.length - 1) rewatch();
+                    else nextScene();
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    prevScene();
+                }
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            if (camera && renderer) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
