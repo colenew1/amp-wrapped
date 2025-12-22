@@ -708,6 +708,7 @@
         }
 
         // Preloaded logo images (base64 embedded)
+        const channelLogos = {};
         let ampLogo = null;
         let cmpLogo = null;
 
@@ -720,7 +721,7 @@
                 let loaded = 0;
                 const checkDone = () => {
                     loaded++;
-                    if (loaded >= 2) resolve();
+                    if (loaded >= 6) resolve();
                 };
 
                 ampLogo = new Image();
@@ -755,10 +756,6 @@
                 channelLogos.cvs.src = '../assets/cvs.jpg';
             });
         }
-
-        // Channel partner logos object
-        const channelLogos = {};
-
         function create3DTextCards() {
             // Create canvas-based text cards - NO background, just bold text centered
             const isMobile = window.innerWidth < 768;
