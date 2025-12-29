@@ -281,6 +281,8 @@
             cursor: pointer;
             box-shadow: 0 4px 30px rgba(232, 93, 38, 0.5);
             transition: all 0.3s ease;
+            min-width: 140px;
+            text-align: center;
         }
 
         .finale-btn:hover {
@@ -407,7 +409,6 @@
     <div class="finale-buttons" id="finale-buttons">
         <button class="finale-btn" id="rewatch-btn-finale">WATCH AGAIN</button>
         <button class="finale-btn" id="share-btn">SHARE</button>
-        <button class="finale-btn secondary" id="copy-link-btn">COPY LINK</button>
     </div>
 
     <div class="overlay">
@@ -763,8 +764,8 @@
             scenes.forEach((s, index) => {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                canvas.width = 1200;
-                canvas.height = 900;
+                canvas.width = 2400;
+                canvas.height = 1800;
 
                 // Clear - fully transparent background
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -772,16 +773,16 @@
 
                 // Only wrap text on CMP slide (index 1) on mobile, full width for everything else
                 const isCmpSlide = index === 1;
-                const titleMaxWidth = (isMobile && isCmpSlide) ? 550 : canvas.width - 200;
-                const subtitleMaxWidth = (isMobile && isCmpSlide) ? 500 : canvas.width - 450;
+                const titleMaxWidth = (isMobile && isCmpSlide) ? 1100 : canvas.width - 400;
+                const subtitleMaxWidth = (isMobile && isCmpSlide) ? 1000 : canvas.width - 900;
 
                 // Center point
                 const centerY = canvas.height / 2;
 
                 // Draw CMP Prism logo on slide 2 (introducing) - draw BEFORE text
                 if (index === 1 && cmpLogo && cmpLogo.complete && cmpLogo.naturalWidth > 0) {
-                    const logoSize = 280;
-                    ctx.drawImage(cmpLogo, (canvas.width - logoSize) / 2, centerY - 260, logoSize, logoSize);
+                    const logoSize = 560;
+                    ctx.drawImage(cmpLogo, (canvas.width - logoSize) / 2, centerY - 520, logoSize, logoSize);
                 }
 
                 // Draw channel partner logos on Notable Channel Wins slide
@@ -792,12 +793,12 @@
                         channelLogos.whoop,
                         channelLogos.cvs
                     ];
-                    const logoSize = 120;
-                    const padding = 20;
-                    const cardPadding = 15;
+                    const logoSize = 240;
+                    const padding = 40;
+                    const cardPadding = 30;
                     const totalWidth = (logoSize + cardPadding * 2) * 4 + padding * 3;
                     const startX = (canvas.width - totalWidth) / 2;
-                    const logoY = centerY - 50;
+                    const logoY = centerY - 100;
 
                     logos.forEach((logo, i) => {
                         if (logo && logo.complete && logo.naturalWidth > 0) {
@@ -808,11 +809,11 @@
                             // Draw white card background with rounded corners
                             ctx.fillStyle = '#FFFFFF';
                             ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-                            ctx.shadowBlur = 15;
+                            ctx.shadowBlur = 30;
                             ctx.shadowOffsetX = 0;
-                            ctx.shadowOffsetY = 5;
+                            ctx.shadowOffsetY = 10;
                             ctx.beginPath();
-                            ctx.roundRect(cardX, cardY, cardSize, cardSize, 12);
+                            ctx.roundRect(cardX, cardY, cardSize, cardSize, 24);
                             ctx.fill();
                             ctx.shadowBlur = 0;
                             ctx.shadowOffsetY = 0;
@@ -840,14 +841,14 @@
                 // Draw stars if needed (above stat) - bigger and higher
                 if (s.hasStars) {
                     ctx.fillStyle = '#FFD700';
-                    ctx.font = '90px sans-serif';
-                    ctx.fillText('★★★★★', canvas.width / 2, centerY - 220);
+                    ctx.font = '180px sans-serif';
+                    ctx.fillText('★★★★★', canvas.width / 2, centerY - 440);
                 }
 
                 // Draw stat if exists - BIG and BOLD in center
                 if (s.stat) {
                     const isGold = s.statClass === 'card-stat-gold';
-                    const gradient = ctx.createLinearGradient(0, centerY - 150, 0, centerY + 100);
+                    const gradient = ctx.createLinearGradient(0, centerY - 300, 0, centerY + 200);
                     if (isGold) {
                         gradient.addColorStop(0, '#FFD700');
                         gradient.addColorStop(0.5, '#FFA500');
@@ -863,19 +864,19 @@
                     // Smaller font for longer stats, even smaller for first slide with logo
                     let fontSize;
                     if (index === 0) {
-                        fontSize = 180; // Smaller on first slide to make room for logo
+                        fontSize = 360; // Smaller on first slide to make room for logo
                     } else {
-                        fontSize = s.stat.length > 6 ? 160 : 260;
+                        fontSize = s.stat.length > 6 ? 320 : 520;
                     }
                     ctx.font = `900 ${fontSize}px Lato, sans-serif`;
                     // Position stat lower if logo is present on first slide
                     let statY;
                     if (index === 0) {
-                        statY = centerY + 60; // Push down to make room for logo above
+                        statY = centerY + 120; // Push down to make room for logo above
                     } else if (s.hasStars) {
-                        statY = centerY + 20;
+                        statY = centerY + 40;
                     } else {
-                        statY = centerY - 20;
+                        statY = centerY - 40;
                     }
                     ctx.fillText(s.stat + (s.statUnit || ''), canvas.width / 2, statY);
                     ctx.shadowBlur = 0; // Reset shadow
@@ -884,43 +885,43 @@
                 // Draw title - white, centered below stat (or in center if no stat)
                 if (s.title) {
                     ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
-                    ctx.shadowBlur = 15;
+                    ctx.shadowBlur = 30;
                     ctx.fillStyle = '#FFFFFF';
-                    ctx.font = '700 56px Lato, sans-serif';
+                    ctx.font = '700 112px Lato, sans-serif';
                     // Adjust title position if logo is present
                     let titleY;
                     if (index === 0) {
-                        titleY = centerY + 180; // Below the "2025" stat on first slide
+                        titleY = centerY + 360; // Below the "2025" stat on first slide
                     } else if (index === scenes.length - 1) {
-                        titleY = centerY - 20; // Below logo on thank you slide
+                        titleY = centerY - 40; // Below logo on thank you slide
                     } else if (index === 1) {
-                        titleY = centerY + 80; // Below CMP logo
+                        titleY = centerY + 160; // Below CMP logo
                     } else if (s.hasLogos) {
-                        titleY = centerY - 150; // Above the logos
+                        titleY = centerY - 300; // Above the logos
                     } else {
-                        titleY = s.stat ? centerY + 100 : centerY;
+                        titleY = s.stat ? centerY + 200 : centerY;
                     }
-                    wrapText(ctx, s.title, canvas.width / 2, titleY, titleMaxWidth, 65);
+                    wrapText(ctx, s.title, canvas.width / 2, titleY, titleMaxWidth, 130);
                     ctx.shadowBlur = 0; // Reset shadow
                 }
 
                 // Draw subtitle below title
                 if (s.subtitle) {
                     ctx.shadowColor = 'rgba(255, 255, 255, 0.3)';
-                    ctx.shadowBlur = 10;
+                    ctx.shadowBlur = 20;
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                    ctx.font = '400 36px Lato, sans-serif';
+                    ctx.font = '400 72px Lato, sans-serif';
                     let subY;
                     if (index === 0) {
-                        subY = centerY + 260; // Below title on first slide
+                        subY = centerY + 520; // Below title on first slide
                     } else if (index === scenes.length - 1) {
-                        subY = centerY + 60; // Below title on thank you slide
+                        subY = centerY + 120; // Below title on thank you slide
                     } else if (index === 1) {
-                        subY = centerY + 160; // Below CMP title
+                        subY = centerY + 320; // Below CMP title
                     } else {
-                        subY = s.stat ? centerY + 180 : centerY + 80;
+                        subY = s.stat ? centerY + 360 : centerY + 160;
                     }
-                    wrapText(ctx, s.subtitle, canvas.width / 2, subY, subtitleMaxWidth, 45);
+                    wrapText(ctx, s.subtitle, canvas.width / 2, subY, subtitleMaxWidth, 90);
                 }
 
                 // Draw AmplifAI logo on first and last slides (horizontal logo with transparency)
@@ -928,17 +929,17 @@
                     // Logo is 1920x531 (3.6:1 aspect ratio)
                     let logoHeight;
                     if (index === 0) {
-                        logoHeight = 70;
+                        logoHeight = 140;
                     } else {
-                        logoHeight = 120; // Bigger on thank you screen
+                        logoHeight = 200; // Bigger on thank you screen (reduced to prevent cropping)
                     }
                     const logoWidth = logoHeight * (1920 / 531);
                     const logoX = (canvas.width - logoWidth) / 2;
                     let logoY;
                     if (index === 0) {
-                        logoY = 280;
+                        logoY = 560;
                     } else {
-                        logoY = 260; // Higher on thank you screen
+                        logoY = 520; // Higher on thank you screen
                     }
                     // Draw the horizontal logo
                     ctx.drawImage(ampLogo, logoX, logoY, logoWidth, logoHeight);
@@ -1337,28 +1338,21 @@
                 url: window.location.href
             };
 
+            // Check if mobile device
+            const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
             try {
-                if (navigator.share) {
+                if (isMobile && navigator.share) {
                     await navigator.share(shareData);
                 } else {
-                    // Fallback: copy to clipboard
-                    copyLink();
+                    // Copy to clipboard on desktop
+                    await navigator.clipboard.writeText(window.location.href);
+                    const btn = document.getElementById('share-btn');
+                    btn.textContent = 'COPIED!';
+                    setTimeout(() => { btn.textContent = 'SHARE'; }, 2000);
                 }
             } catch (err) {
                 console.log('Share failed:', err);
-            }
-        }
-
-        // Copy link functionality
-        async function copyLink() {
-            try {
-                await navigator.clipboard.writeText(window.location.href);
-                const btn = document.getElementById('copy-link-btn');
-                const originalText = btn.textContent;
-                btn.textContent = '✓ COPIED!';
-                setTimeout(() => btn.textContent = originalText, 2000);
-            } catch (err) {
-                console.log('Copy failed:', err);
             }
         }
 
@@ -1416,7 +1410,6 @@
         document.getElementById('rewatch-btn').addEventListener('click', rewatch);
         document.getElementById('rewatch-btn-finale').addEventListener('click', rewatch);
         document.getElementById('share-btn').addEventListener('click', shareExperience);
-        document.getElementById('copy-link-btn').addEventListener('click', copyLink);
 
         // Touch events for swipe
         document.addEventListener('touchstart', handleTouchStart, { passive: true });
