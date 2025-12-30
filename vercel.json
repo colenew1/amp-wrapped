@@ -5,6 +5,10 @@
       "destination": "/immersive/index.html?record"
     },
     {
+      "source": "/channel/record",
+      "destination": "/immersive/channel.html?record"
+    },
+    {
       "source": "/channel",
       "destination": "/immersive/channel.html"
     },
