@@ -1,12 +1,16 @@
 {
   "rewrites": [
     {
-      "source": "/immersive/record",
+      "source": "/record",
       "destination": "/immersive/index.html?record"
     },
     {
-      "source": "/immersive/channel",
+      "source": "/channel",
       "destination": "/immersive/channel.html"
+    },
+    {
+      "source": "/",
+      "destination": "/immersive/index.html"
     }
   ]
 }

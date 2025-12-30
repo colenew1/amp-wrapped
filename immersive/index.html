@@ -315,6 +315,45 @@
             box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
         }
 
+        /* CMP Research banner */
+        .cmp-banner {
+            position: fixed;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(232, 93, 38, 0.9);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            color: white;
+            font-family: 'Lato', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            z-index: 30;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            box-shadow: 0 4px 20px rgba(232, 93, 38, 0.5);
+            animation: pulse-banner 2s ease-in-out infinite;
+        }
+
+        .cmp-banner:hover {
+            background: rgba(232, 93, 38, 1);
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 6px 30px rgba(232, 93, 38, 0.7);
+        }
+
+        .cmp-banner.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        @keyframes pulse-banner {
+            0%, 100% { box-shadow: 0 4px 20px rgba(232, 93, 38, 0.5); }
+            50% { box-shadow: 0 4px 30px rgba(232, 93, 38, 0.8); }
+        }
+
         /* Particle burst canvas */
         #burst-canvas {
             position: fixed;
@@ -407,7 +446,7 @@
                 font-size: 0.8rem;
             }
             .progress-dots {
-                bottom: 12rem;
+                bottom: 10rem;
             }
         }
     </style>
@@ -420,6 +459,7 @@
     <img src="../assets/amplifai-logo.png" alt="AmplifAI" class="logo-watermark">
 
     <div class="progress-dots" id="progress-dots"></div>
+    <div class="cmp-banner" id="cmp-banner">CLICK FOR MORE INFO</div>
     <div class="finale-buttons" id="finale-buttons">
         <button class="finale-btn" id="rewatch-btn-finale">WATCH AGAIN</button>
         <button class="finale-btn" id="share-btn">SHARE</button>
@@ -454,78 +494,87 @@
         }
 
         // Scenes - text cards float in 3D space, positioned along the lookAt direction from camera
+        // Roller coaster: unpredictable directions, tilts, zooms
         const scenes = [
             {
+                // Start centered - raised up a bit
                 stat: "2025",
                 statClass: "card-stat-orange",
                 title: "Year in Review",
                 subtitle: "Our biggest year yet",
                 camera: { x: 0, y: 0, z: 0 },
                 lookAt: { x: 0, y: 0, z: -100 },
-                textPos: { x: 0, y: 0, z: -55 }
+                textPos: { x: 0, y: 5, z: -55 }
             },
             {
+                // Hard LEFT + look DOWN - moved closer and higher
                 stat: "",
                 title: "CMP Prism",
                 subtitle: "Named the industry's leading Auto QA provider",
-                camera: { x: 100, y: 0, z: -120 },
-                lookAt: { x: 100, y: 0, z: -250 },
-                textPos: { x: 100, y: -5, z: -170 }
+                camera: { x: -180, y: 60, z: -80 },
+                lookAt: { x: -180, y: 50, z: -200 },
+                textPos: { x: -180, y: 55, z: -135 }
             },
             {
+                // Continue LEFT (same direction!) + level out
                 stat: "5B+",
                 statClass: "card-stat-orange",
                 title: "Data Points Processed Daily",
                 subtitle: "Powering real-time insights at massive scale",
-                camera: { x: -100, y: 0, z: -200 },
-                lookAt: { x: -100, y: 0, z: -400 },
-                textPos: { x: -100, y: 0, z: -270 }
+                camera: { x: -280, y: 20, z: -200 },
+                lookAt: { x: -280, y: 20, z: -400 },
+                textPos: { x: -280, y: 15, z: -280 }
             },
             {
+                // DIVE DOWN + swing to center
                 stat: "30+",
                 statClass: "card-stat-orange",
                 title: "Countries Worldwide",
                 subtitle: "Global enterprise teams trust AmplifAI",
-                camera: { x: 200, y: 0, z: -200 },
-                lookAt: { x: 200, y: 0, z: -400 },
-                textPos: { x: 200, y: 0, z: -270 }
+                camera: { x: -50, y: -120, z: -320 },
+                lookAt: { x: -50, y: -120, z: -500 },
+                textPos: { x: -50, y: -125, z: -390 }
             },
             {
+                // RISE WAY UP + go RIGHT - raised text position
                 stat: "800",
                 statUnit: "ms",
                 title: "Average Response Time",
                 subtitle: "Lightning fast, real-time performance",
-                camera: { x: -150, y: 0, z: -400 },
-                lookAt: { x: -150, y: 0, z: -600 },
-                textPos: { x: -150, y: 0, z: -470 }
+                camera: { x: 150, y: 140, z: -450 },
+                lookAt: { x: 150, y: 80, z: -620 },
+                textPos: { x: 150, y: 100, z: -530 }
             },
             {
+                // Continue RIGHT (same direction!) + drop down
                 stat: "4.75",
                 statClass: "card-stat-orange",
                 title: "Customer Satisfaction Score",
                 subtitle: "92% of customers would recommend us",
                 hasStars: true,
-                camera: { x: 150, y: 0, z: -550 },
-                lookAt: { x: 150, y: 0, z: -750 },
-                textPos: { x: 150, y: 0, z: -620 }
+                camera: { x: 280, y: -60, z: -580 },
+                lookAt: { x: 280, y: -60, z: -780 },
+                textPos: { x: 280, y: -65, z: -660 }
             },
             {
+                // Center for big reveal - DRAMATIC zoom out
                 stat: "$33.7M",
                 statClass: "card-stat-gold",
                 title: "Series B Funding Raised",
                 subtitle: "Led by CVS Health Ventures",
-                camera: { x: -100, y: 0, z: -650 },
-                lookAt: { x: -100, y: 0, z: -850 },
-                textPos: { x: -100, y: 0, z: -720 }
+                camera: { x: 0, y: 20, z: -350 },
+                lookAt: { x: 0, y: 20, z: -520 },
+                textPos: { x: 0, y: 15, z: -435 }
             },
             {
-                stat: "200K+",
+                // Pull BACK + go LEFT + rise
+                stat: "250K+",
                 statClass: "card-stat-orange",
                 title: "Active Users",
                 subtitle: "Across 255+ enterprise customers and partners",
-                camera: { x: 100, y: 0, z: -750 },
-                lookAt: { x: 100, y: 0, z: -950 },
-                textPos: { x: 100, y: 0, z: -820 }
+                camera: { x: -200, y: 80, z: -780 },
+                lookAt: { x: -200, y: 80, z: -1000 },
+                textPos: { x: -200, y: 75, z: -870 }
             },
             {
                 stat: "",
@@ -534,7 +583,7 @@
                 finale: true,
                 camera: { x: 0, y: 0, z: 0 },
                 lookAt: { x: 0, y: 0, z: -100 },
-                textPos: { x: 0, y: -3, z: -42 }
+                textPos: { x: 0, y: -3, z: -46 }
             }
         ];
 
@@ -1017,10 +1066,10 @@
                 obj.position.y = obj.userData.baseY + Math.sin(time * obj.userData.floatSpeed + obj.userData.floatOffset) * 10;
             });
 
-            // Spawn sparkles for gold stat scenes
-            if (scenes[currentScene] && scenes[currentScene].statClass === 'card-stat-gold') {
-                if (Math.random() < 0.15) spawnSparkle();
-            }
+            // Sparkles disabled for cleaner look
+            // if (scenes[currentScene] && scenes[currentScene].statClass === 'card-stat-gold') {
+            //     if (Math.random() < 0.15) spawnSparkle();
+            // }
 
             // Draw sparkles on burst canvas (only if not doing burst animation)
             if (burstParticles.length === 0 && sparkles.length > 0) {
@@ -1097,6 +1146,12 @@
             const s = scenes[index];
             const duration = 1.5;
 
+            // Hide CMP banner immediately when leaving slide 2 (index 1)
+            const cmpBanner = document.getElementById('cmp-banner');
+            if (cmpBanner && currentScene === 1 && index !== 1) {
+                cmpBanner.classList.remove('visible');
+            }
+
             // Update scene index immediately so the animate loop can handle opacity
             currentScene = index;
 
@@ -1128,6 +1183,13 @@
                     setTimeout(createConfetti, 800);
                 }
             }, duration * 0.5 * 1000);
+
+            // Show CMP banner after arriving at slide 2 (index 1)
+            if (cmpBanner && index === 1 && !isRecordMode) {
+                setTimeout(() => {
+                    cmpBanner.classList.add('visible');
+                }, duration * 1000);
+            }
 
             // Animation complete
             setTimeout(() => {
@@ -1174,6 +1236,7 @@
             document.getElementById('prev-btn').style.display = isFinale ? 'none' : 'block';
             document.getElementById('rewatch-btn').style.display = 'none'; // Hidden, using finale buttons instead
             document.getElementById('finale-buttons').style.display = (isFinale && !isRecordMode) ? 'flex' : 'none';
+
             updateProgressDots();
         }
 
@@ -1348,6 +1411,11 @@
         document.getElementById('rewatch-btn').addEventListener('click', rewatch);
         document.getElementById('rewatch-btn-finale').addEventListener('click', rewatch);
         document.getElementById('share-btn').addEventListener('click', shareExperience);
+
+        // CMP Research banner click handler
+        document.getElementById('cmp-banner').addEventListener('click', () => {
+            window.open('https://www.amplifai.com/go/cmp-research-prism-for-automated-qa-qm-2025', '_blank');
+        });
 
         // Touch events for swipe
         document.addEventListener('touchstart', handleTouchStart, { passive: true });
