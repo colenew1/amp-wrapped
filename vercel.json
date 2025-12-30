@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/record",
-      "destination": "/immersive/index.html?record"
+      "destination": "/immersive/index.html"
     },
     {
       "source": "/channel/record",
-      "destination": "/immersive/channel.html?record"
+      "destination": "/immersive/channel.html"
     },
     {
       "source": "/channel",

@@ -483,8 +483,8 @@
     <div class="scene-indicator" id="scene-indicator">01 / 09</div>
 
     <script>
-        // Record mode - add ?record to URL to hide all UI for screen recording
-        const isRecordMode = new URLSearchParams(window.location.search).has('record');
+        // Record mode - use /record path or ?record query to hide all UI for screen recording
+        const isRecordMode = new URLSearchParams(window.location.search).has('record') || window.location.pathname.includes('/record');
         if (isRecordMode) {
             document.querySelector('.progress-dots')?.style.setProperty('display', 'none', 'important');
             document.querySelector('.finale-buttons')?.style.setProperty('display', 'none', 'important');
