@@ -1275,8 +1275,7 @@
                 cmpBanner.classList.remove('visible');
             }
 
-            // Update scene index immediately so the animate loop can handle opacity
-            currentScene = index;
+            const previousScene = currentScene;
 
             // Animate camera position and lookAt together - using currentLookAt to prevent jump
             gsap.to(camera.position, {
@@ -1298,6 +1297,11 @@
                 duration: duration,
                 ease: 'power3.inOut'
             });
+
+            // Delay scene index update until camera has moved partway - prevents frame jump
+            setTimeout(() => {
+                currentScene = index;
+            }, duration * 0.25 * 1000);
 
             // Update UI progress
             setTimeout(() => {
