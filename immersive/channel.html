@@ -836,10 +836,9 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.textAlign = 'center';
 
-                // Only wrap text on CMP slide (index 1) on mobile, full width for everything else
-                const isCmpSlide = index === 1;
-                const titleMaxWidth = (isMobile && isCmpSlide) ? 900 : canvas.width - 400;
-                const subtitleMaxWidth = (isMobile && isCmpSlide) ? 750 : canvas.width - 900;
+                // Text max widths - wide enough to prevent wrapping
+                const titleMaxWidth = canvas.width - 400;
+                const subtitleMaxWidth = canvas.width - 400;
 
                 // Center point
                 const centerY = canvas.height / 2;
